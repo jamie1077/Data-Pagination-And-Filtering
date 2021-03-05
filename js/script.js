@@ -1,12 +1,22 @@
 const itemsPerPage = 9;
 const studentList = document.querySelector('.student-list');
+const linkList = document.querySelector('.link-list');
+
+/*
+   Dynamically adds search bar in header of page
+*/
 const header = document.querySelector('.header');
 
+const searchBar = `<label for="search" class="student-search">
+<input id="search" placeholder="Search by name...">
+<button type="submit" id="submit"><img src="img/icn-search.svg" alt="Search icon"></button>
+</label>`;
+
+header.insertAdjacentHTML('beforeend', searchBar);
 
 
 /*
-Create the `showPage` function
-This function will create and insert/append the elements needed to display a "page" of nine students
+   Displays list of students resticted to nine students per page
 */
 function showPage (list, page){
    const startIndex = (page * itemsPerPage) - itemsPerPage;
@@ -34,12 +44,10 @@ function showPage (list, page){
 }
 
 /*
-Create the `addPagination` function
-This function will create and insert/append the elements needed for the pagination buttons
+   Displays pagination buttons
 */
 function addPagination (list){
    const numOfPages = Math.ceil(list.length / itemsPerPage);
-   const linkList = document.querySelector('.link-list');
    
    linkList.innerHTML = '';
 
@@ -62,13 +70,50 @@ function addPagination (list){
     });
 }
 
-//search
-const searchBar = `<label for="search" class="student-search">
-<input id="search" placeholder="Search by name...">
-<button type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
-</label>`;
+/*
+   Search functionality
+*/
+const search = document.querySelector('#search');
+const submit = document.querySelector('#submit');
+const alert = document.createElement('P');
+alert.innerHTML = "No results found";
 
-header.insertAdjacentHTML('beforeend', searchBar);
+
+//Filters the students based on user input
+function searchList (searchInput, list){
+   const inputValue = searchInput.value.toLowerCase();
+   const results = [];
+   
+
+   for(let i = 0; i < list.length; i++){
+     let result = list[i];
+     if (result.name.first.toLowerCase().indexOf(inputValue) !== -1
+         || result.name.last.toLowerCase().indexOf(inputValue) !== -1) {
+         results.push(result);
+      }
+   }
+
+   if(results !== 0){
+      showPage(results, 1);
+      addPagination(results);
+
+   }else{
+      studentList.appendChild(alert);
+   }  
+ }
+  
+
+//Event handler to call search results on clicking button in search bar
+submit.addEventListener('click', (e) => {
+   e.preventDefault();
+   searchList(search, data);
+ });
+ 
+
+//Event handler to call search results on typing in search bar input field 
+ search.addEventListener('keyup', () => {
+   searchList(search, data);
+ });
 
 
 // Call functions
