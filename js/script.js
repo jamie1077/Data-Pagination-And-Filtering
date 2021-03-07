@@ -24,6 +24,7 @@ function showPage (list, page){
 
    studentList.innerHTML = '';
 
+   //loop over the list and append each list item to the page
    for(let i = 0; i < list.length; i++){
       if(i >= startIndex && i < endIndex){
          const student = `
@@ -38,6 +39,8 @@ function showPage (list, page){
                </div>
             </li>
          `;
+
+         //inserts the resulting content into specified position
          studentList.insertAdjacentHTML('beforeend', student);
       }
    }
@@ -51,15 +54,19 @@ function addPagination (list){
    
    linkList.innerHTML = '';
 
+   //Lopp over the number of pages needed and append the button element to the page
    for (let i = 1; i <= numOfPages; i++){
       const buttons = `<li>
          <button type="button">${[i]}</button>
       </li>`;
       linkList.insertAdjacentHTML('beforeend', buttons);
+
+      //Adds active class to first button in list
       const firstButton = linkList.querySelector('button');
       firstButton.className = 'active';
    }
 
+   //Event handler to add and remove active class on clicked buttons
    linkList.addEventListener('click', (e) => {
       if(e.target.tagName === 'BUTTON'){
          const activeButton = document.querySelector(".active");
@@ -75,8 +82,6 @@ function addPagination (list){
 */
 const search = document.querySelector('#search');
 const submit = document.querySelector('#submit');
-const alert = document.createElement('P');
-alert.innerHTML = "No results found";
 
 
 //Filters the students based on user input
@@ -84,7 +89,7 @@ function searchList (searchInput, list){
    const inputValue = searchInput.value.toLowerCase();
    const results = [];
    
-
+   //Loop over the list for matching items pushing results into new array
    for(let i = 0; i < list.length; i++){
      let result = list[i];
      if (result.name.first.toLowerCase().indexOf(inputValue) !== -1
@@ -93,13 +98,18 @@ function searchList (searchInput, list){
       }
    }
 
-   if(results !== 0){
-      showPage(results, 1);
-      addPagination(results);
+   //Displays search results 
+   showPage(results, 1);
+   addPagination(results);
 
-   }else{
-      studentList.appendChild(alert);
-   }  
+   //Where no matches are found, displays a 'No Results Found' message - credit @Jelena and @Karla for assitance on this aspect
+   if(results.length === 0) {
+      const createDiv = document.createElement('div');
+      const noResultsP = document.createElement('p');
+      createDiv.appendChild(noResultsP);
+      document.querySelector('.student-list').append(createDiv);
+      noResultsP.textContent = 'No Results Found';
+   } 
  }
   
 
